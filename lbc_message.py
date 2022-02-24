@@ -1,14 +1,29 @@
+from termios import VT1
 from bs4 import BeautifulSoup
 from lxml import etree
 import re
-class LbcMessageXpathFinder:
-    ITEMS_PARENT_TAG_TR = '//td/a[contains(@href, "[MYSRCH]")]/../..'
+import logging
+from enum import Enum
+        
+class LbcMessageXpathFinderV1():
+    ITEMS_PARENT_TAG_TR = '//td/a[contains(@href, "[MYSRCH]") and span]/../..'
     ITEM_IMAGE_STYLE = './td[1]/div'
     ITEM_DESCRIPTION = './td[2]/a/span[1]'
     ITEM_PRIX = './td[2]/a/span[2]'
     ITEM_COMMUNE = './td[2]/a/div/span[1]'
+
+class LbcMessageXpathFinderV2():
+    ITEMS_PARENT_TAG_TR = '//td[a and table]/a[contains(@href, "[MYSRCH]")]/../..'
+    ITEM_IMAGE_STYLE = './td[1]/div'
+    ITEM_DESCRIPTION = './td[2]/a/span[1]'
+    ITEM_PRIX = './td[2]/a/span[2]'
+    ITEM_COMMUNE = './td[2]/a/div/span[1]'
+
 class LbcMessage:
     
+    def __init__(self):
+        self.finder = None
+
     def loadFromFile(self, file):
         with open(file, 'r') as fp:
             content = fp.read()
@@ -18,24 +33,33 @@ class LbcMessage:
     def loadFromString(self, payload):
         soup = BeautifulSoup(payload, "html.parser")
         self.dom = etree.HTML(str(soup))
+        logging.debug(etree.tostring(self.dom))
     
     def _find_search_items(self):
-        return self.dom.xpath(LbcMessageXpathFinder.ITEMS_PARENT_TAG_TR)
+        results = self.dom.xpath(LbcMessageXpathFinderV1.ITEMS_PARENT_TAG_TR)
+        self.finder = LbcMessageXpathFinderV1
+        if results is None or len(results) == 0:
+            results = self.dom.xpath(LbcMessageXpathFinderV2.ITEMS_PARENT_TAG_TR)
+            self.finder = LbcMessageXpathFinderV2
+        if results is None or len(results) == 0:
+            raise Exception('cannot find compatible finder')    
+        return results
+
 
     def _find_search_item_description(self, parent_item):
-        element = parent_item.find(LbcMessageXpathFinder.ITEM_DESCRIPTION)
+        element = parent_item.find(self.finder.ITEM_DESCRIPTION)
         return element.text if element is not None else None
 
     def _find_search_item_prix(self, parent_item):
-        element = parent_item.find(LbcMessageXpathFinder.ITEM_PRIX)
+        element = parent_item.find(self.finder.ITEM_PRIX)
         return element.text if element is not None else None
 
     def _find_search_item_commune(self, parent_item):
-        element = parent_item.find(LbcMessageXpathFinder.ITEM_COMMUNE)
+        element = parent_item.find(self.finder.ITEM_COMMUNE)
         return element.text if element is not None else None
 
     def _find_search_item_image_url(self, parent_item):
-        element =  parent_item.find(LbcMessageXpathFinder.ITEM_IMAGE_STYLE)
+        element =  parent_item.find(self.finder.ITEM_IMAGE_STYLE)
         style_string = element.attrib['style']
         for style_attr_raw in style_string.split(';'):
             style_attr = style_attr_raw.strip()

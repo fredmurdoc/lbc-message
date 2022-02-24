@@ -1,4 +1,4 @@
-from ..gmail import Gmail, GmailFilter
+from gmail import Gmail, GmailFilter
 
 from datetime import datetime
 
