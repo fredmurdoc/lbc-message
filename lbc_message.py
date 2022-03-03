@@ -1,8 +1,10 @@
 from termios import VT1
 from bs4 import BeautifulSoup
+from datetime import datetime
 from lxml import etree
 import re
 import logging
+import os.path
 from enum import Enum
         
 class LbcMessageXpathFinderV1():
@@ -23,11 +25,12 @@ class LbcMessageXpathFinderV2():
 
 class LbcMessage:
     REGEXP_SUPERFICIE = r'.+\s+(?P<superficie>[0-9]+)\s+m\u00b2.*'
-    REGEXP_NBPIECES= r'.+\s+(?P<nb_pieces>[0-9]+)\s+pièces\s+.*'
+    REGEXP_NBPIECES= r'.+\s+(?P<nb_pieces>[0-9]+)\s+pièce.\s+.*'
     def __init__(self):
         self.finder = None
-
+        self.date = None
     def loadFromFile(self, file):
+        self.date = os.path.getmtime(file)
         with open(file, 'r') as fp:
             content = fp.read()
             self.loadFromString(content)
@@ -105,6 +108,7 @@ class LbcMessage:
         
     def _extract_dict_from_parent_item(self, parent_item):
         return {
+        'date' : datetime.fromtimestamp(self.date).strftime('%Y-%m-%d') if self.date is not None else None,
         'url' : self._find_search_item_url(parent_item),
         'prix' : self._find_search_item_prix(parent_item),
         'description' : self._find_search_item_description(parent_item),
