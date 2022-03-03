@@ -8,6 +8,7 @@ from enum import Enum
 class LbcMessageXpathFinderV1():
     ITEMS_PARENT_TAG_TR = '//td/a[contains(@href, "[MYSRCH]") and span]/../..'
     ITEM_IMAGE_STYLE = './td[1]/div'
+    ITEM_URL = './td[2]/a'
     ITEM_DESCRIPTION = './td[2]/a/span[1]'
     ITEM_PRIX = './td[2]/a/span[2]'
     ITEM_COMMUNE = './td[2]/a/div/span[1]'
@@ -15,6 +16,7 @@ class LbcMessageXpathFinderV1():
 class LbcMessageXpathFinderV2():
     ITEMS_PARENT_TAG_TR = '//td[a and table]/a[contains(@href, "[MYSRCH]")]/../..'
     ITEM_IMAGE_STYLE = './td[1]/div'
+    ITEM_URL = './td/a[contains(@href, "[MYSRCH]") and span]'
     ITEM_DESCRIPTION = './td[2]/a/span[1]'
     ITEM_PRIX = './td[2]/a/span[2]'
     ITEM_COMMUNE = './td[2]/a/div/span[1]'
@@ -45,6 +47,10 @@ class LbcMessage:
             raise Exception('cannot find compatible finder')    
         return results
 
+    def _find_search_item_url(self, parent_item):
+        element = parent_item.find(self.finder.ITEM_URL)
+        return element.attrib['href'] if element is not None else None
+
 
     def _find_search_item_description(self, parent_item):
         element = parent_item.find(self.finder.ITEM_DESCRIPTION)
@@ -52,11 +58,20 @@ class LbcMessage:
 
     def _find_search_item_prix(self, parent_item):
         element = parent_item.find(self.finder.ITEM_PRIX)
+        return element.text.split(' ')[0] if element is not None else None
+
+    def _find_search_item_commune_cp(self, parent_item):
+        element = parent_item.find(self.finder.ITEM_COMMUNE)
         return element.text if element is not None else None
 
     def _find_search_item_commune(self, parent_item):
-        element = parent_item.find(self.finder.ITEM_COMMUNE)
-        return element.text if element is not None else None
+        com_cp = self._find_search_item_commune_cp(parent_item)
+        return com_cp.split(' ')[0]
+
+    def _find_search_item_commune_codepostal(self, parent_item):
+        com_cp = self._find_search_item_commune_cp(parent_item)
+        return com_cp.split(' ')[1]
+
 
     def _find_search_item_image_url(self, parent_item):
         element =  parent_item.find(self.finder.ITEM_IMAGE_STYLE)
@@ -71,3 +86,21 @@ class LbcMessage:
                 if reg_val is None:
                     return None
                 return reg_val.group(1)    
+
+        
+    def _extract_dict_from_parent_item(self, parent_item):
+        return {
+        'url' : self._find_search_item_url(parent_item),
+        'prix' : self._find_search_item_prix(parent_item),
+        'description' : self._find_search_item_description(parent_item),
+        'commune' : self._find_search_item_commune(parent_item),
+        'image_url' : self._find_search_item_image_url(parent_item)
+        }
+    
+    def extract_items(self):
+        extract = []
+        items = self._find_search_items()
+        for item in items:
+            extract.append(self._extract_dict_from_parent_item(item))
+        return extract
+    

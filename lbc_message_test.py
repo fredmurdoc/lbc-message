@@ -67,6 +67,11 @@ class TestLbcMessage(unittest.TestCase):
             logging.debug('-----')
             logging.debug(child.tag)
             logging.debug(etree.tostring(child))
+    def assert_url(self, fileTested, expected):
+        item = self.get_first_item(fileTested)
+        value = self.lbc_msg._find_search_item_url(item)
+        self.assertIsNotNone(value)
+        self.assertEquals(expected, value)
         
 
     def assert_image(self, fileTested, expected):
@@ -87,11 +92,20 @@ class TestLbcMessage(unittest.TestCase):
         self.assertIsNotNone(value)
         self.assertEquals(expected, value)
 
+    def assert_commune_codepostal(self, fileTested, expected):
+        item = self.get_first_item(fileTested)
+        value = self.lbc_msg._find_search_item_commune_codepostal(item)
+        self.assertIsNotNone(value)
+        self.assertEquals(expected, value)
+
     def assert_prix(self, fileTested, expected):
         item = self.get_first_item(fileTested)
         value = self.lbc_msg._find_search_item_prix(item)
         self.assertIsNotNone(value)
         self.assertEquals(expected, value)
+
+    def test_find_search_item_url_v1(self):
+        self.assert_url('tests/v1.html', 'https://www.leboncoin.fr/vi/2000407154.htm/#xtor=ES-3999-[MYSRCH]')
 
     def test_find_search_item_image_url_v1(self):
         self.assert_image('tests/v1.html', 'https://img.leboncoin.fr/api/v1/lbcpb1/images/93/6c/48/936c485fec35759f7901d90e5e0276c0fef37ec5.jpg?rule=ad-small')
@@ -100,11 +114,18 @@ class TestLbcMessage(unittest.TestCase):
         self.assert_description('tests/v1.html', 'Maison 1 pièce 60 m²')
     
     def test_find_search_item_prix_v1(self):
-        self.assert_prix('tests/v1.html', '58000 €')
+        self.assert_prix('tests/v1.html', '58000')
         
     def test_find_search_item_commune_v1(self):
-        self.assert_commune('tests/v1.html', 'Treffieux 44170')
+        self.assert_commune('tests/v1.html', 'Treffieux')
+    
+    def test_find_search_item_codepostal_v1(self):
+        self.assert_commune_codepostal('tests/v1.html', '44170')
         
+
+    def test_find_search_item_url_v2(self):
+        self.assert_url('tests/v2.html', 'https://www.leboncoin.fr/vi/1980574792.htm/#xtor=ES-3999-[MYSRCH]')
+
     def test_find_search_item_image_url_v2(self):
         item = self.get_first_item('tests/v2.html')
         self.debug_element(item)
@@ -114,11 +135,14 @@ class TestLbcMessage(unittest.TestCase):
         self.assert_description('tests/v2.html', 'Longère 5 pièces 140 m²')
     
     def test_find_search_item_prix_v2(self):
-        self.assert_prix('tests/v2.html', '74990 €')
+        self.assert_prix('tests/v2.html', '74990')
         
     def test_find_search_item_commune_v2(self):
-        self.assert_commune('tests/v2.html', 'Saint-Aubin-des-Châteaux 44110')
+        self.assert_commune('tests/v2.html', 'Saint-Aubin-des-Châteaux')
     
+    def test_find_search_item_codepostal_v2(self):
+        self.assert_commune_codepostal('tests/v2.html', '44110')
+
 if __name__ == '__main__':
     unittest.main()
 
