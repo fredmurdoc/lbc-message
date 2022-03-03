@@ -22,7 +22,8 @@ class LbcMessageXpathFinderV2():
     ITEM_COMMUNE = './td[2]/a/div/span[1]'
 
 class LbcMessage:
-    
+    REGEXP_SUPERFICIE = r'.+\s+(?P<superficie>[0-9]+)\s+m\u00b2.*'
+    REGEXP_NBPIECES= r'.+\s+(?P<nb_pieces>[0-9]+)\s+pièces\s+.*'
     def __init__(self):
         self.finder = None
 
@@ -50,6 +51,20 @@ class LbcMessage:
     def _find_search_item_url(self, parent_item):
         element = parent_item.find(self.finder.ITEM_URL)
         return element.attrib['href'] if element is not None else None
+
+    def _find_search_item_superficie(self, parent_item):
+        description = self._find_search_item_description(parent_item)
+        if description is None:
+            return None
+        m = re.search(self.REGEXP_SUPERFICIE, description)
+        return m.group('superficie') if m is not None else None
+
+    def _find_search_item_nb_pieces(self, parent_item):
+        description = self._find_search_item_description(parent_item)
+        if description is None:
+            return None
+        m = re.search(self.REGEXP_NBPIECES, description)
+        return m.group('nb_pieces') if m is not None else None
 
 
     def _find_search_item_description(self, parent_item):
@@ -94,7 +109,10 @@ class LbcMessage:
         'prix' : self._find_search_item_prix(parent_item),
         'description' : self._find_search_item_description(parent_item),
         'commune' : self._find_search_item_commune(parent_item),
-        'image_url' : self._find_search_item_image_url(parent_item)
+        'code_postal' : self._find_search_item_commune_codepostal(parent_item),
+        'image_url' : self._find_search_item_image_url(parent_item),
+        'superficie' : self._find_search_item_superficie(parent_item),
+        'nb_pieces' : self._find_search_item_nb_pieces(parent_item)
         }
     
     def extract_items(self):

@@ -86,6 +86,19 @@ class TestLbcMessage(unittest.TestCase):
         self.assertIsNotNone(value)
         self.assertEquals(expected, value)
     
+    def assert_superficie(self, fileTested, expected):
+        item = self.get_first_item(fileTested)
+        value = self.lbc_msg._find_search_item_superficie(item)
+        self.assertIsNotNone(value)
+        self.assertEquals(expected, value)
+    
+    def assert_nbpieces(self, fileTested, expected):
+        item = self.get_first_item(fileTested)
+        value = self.lbc_msg._find_search_item_nb_pieces(item)
+        self.assertIsNotNone(value)
+        self.assertEquals(expected, value)
+        
+    
     def assert_commune(self, fileTested, expected):
         item = self.get_first_item(fileTested)
         value = self.lbc_msg._find_search_item_commune(item)
@@ -113,6 +126,12 @@ class TestLbcMessage(unittest.TestCase):
     def test_find_search_item_description_v1(self):
         self.assert_description('tests/v1.html', 'Maison 1 pièce 60 m²')
     
+    def test_find_search_item_superficie_v1(self):
+        self.assert_superficie('tests/v1.html', '60')
+
+    def test_find_search_item_superficie_v1(self):
+        self.assert_nbpieces('tests/v1.html', '1')
+    
     def test_find_search_item_prix_v1(self):
         self.assert_prix('tests/v1.html', '58000')
         
@@ -133,7 +152,13 @@ class TestLbcMessage(unittest.TestCase):
 
     def test_find_search_item_description_v2(self):
         self.assert_description('tests/v2.html', 'Longère 5 pièces 140 m²')
-    
+
+    def test_find_search_item_superficie_v1(self):
+        self.assert_superficie('tests/v2.html', '140')
+
+    def test_find_search_item_superficie_v1(self):
+        self.assert_nbpieces('tests/v2.html', '5')
+
     def test_find_search_item_prix_v2(self):
         self.assert_prix('tests/v2.html', '74990')
         
