@@ -1,3 +1,4 @@
 *.json
 results/*
+annonces/*
 __pycache__/*
