@@ -10,3 +10,4 @@
 
 Avec Firefox il faut récupérer le bout d'url qui va bien et telecharger la page web unqiueemtn dans le repertoire annonce
 
+`enrich_items.py` ce script va parser les annonces telechargées en l'etat et va enrichir le json avec les infos dedans : annonces desactivée ou pas, et les critères de l'annonce
