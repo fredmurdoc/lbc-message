@@ -1,9 +1,7 @@
-from posixpath import dirname
 from gmail import Gmail, GmailFilter
-import json
-from datetime import datetime
 from lbc_message import LbcMessage
-
+from posixpath import dirname
+from datetime import datetime
 overWrite = False
 
 def main():
@@ -47,20 +45,6 @@ def main():
             print("payload file error")
             print(ee)
 
-        #get payload file
-        payload_file = gmail.getPayloadPath(folder='%s/results' % dirname(__file__), msg = real_message)
-        print('analyze payload file %s' % payload_file)
-        #analyse it
-        lbc_msg = LbcMessage()
-        lbc_msg.loadFromFile(payload_file)
-        try:
-            extracted = lbc_msg.extract_items()
-            json_content.extend(extracted)
-        except Exception as e:
-            print(e)    
-        
-    with open('items.json', 'w') as fp:
-        json.dump(json_content, fp)
-        fp.close()
+
 if __name__ == '__main__':
     main()

@@ -108,7 +108,8 @@ class LbcMessage:
         
     def _extract_dict_from_parent_item(self, parent_item):
         return {
-        'date' : datetime.fromtimestamp(self.date).strftime('%Y-%m-%d') if self.date is not None else None,
+        'date_mail' : datetime.fromtimestamp(self.date).strftime('%Y-%m-%d') if self.date is not None else None,
+        'created_at' : datetime.now().strftime('%Y-%m-%d'),
         'url' : self._find_search_item_url(parent_item),
         'prix' : self._find_search_item_prix(parent_item),
         'description' : self._find_search_item_description(parent_item),

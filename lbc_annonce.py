@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import logging
 import sys
-
+from datetime import datetime
 
 class LbcAnnonce():
     fp_html = None
@@ -18,6 +18,10 @@ class LbcAnnonce():
     def est_desactivee(self):
         annonce_desactivee = self.soup.find(string='Cette annonce est désactivée')
         return annonce_desactivee is not None
+
+    def extract_metadatas(self):
+        p_data_annonce = self.soup.find('p', attrs={'data-qa-id' : "adview_date"})
+        return { 'date_annonce' : datetime.strptime(p_data_annonce.text, '%d/%m/%Y à %H:%M').strftime('%d/%m/%Y %H:%M') if p_data_annonce is not None else None}
 
     def extract_criteres(self):
         criteres = self.soup.find(string='Critères')
