@@ -127,13 +127,13 @@ class TestLbcMessage(unittest.TestCase):
         self.assert_description('tests/v1.html', 'Maison 1 pièce 60 m²')
     
     def test_find_search_item_superficie_v1(self):
-        self.assert_superficie('tests/v1.html', '60')
+        self.assert_superficie('tests/v1.html', 60)
 
     def test_find_search_item_superficie_v1(self):
         self.assert_nbpieces('tests/v1.html', '1')
     
     def test_find_search_item_prix_v1(self):
-        self.assert_prix('tests/v1.html', '58000')
+        self.assert_prix('tests/v1.html', 58000)
         
     def test_find_search_item_commune_v1(self):
         self.assert_commune('tests/v1.html', 'Treffieux')
@@ -154,13 +154,13 @@ class TestLbcMessage(unittest.TestCase):
         self.assert_description('tests/v2.html', 'Longère 5 pièces 140 m²')
 
     def test_find_search_item_superficie_v1(self):
-        self.assert_superficie('tests/v2.html', '140')
+        self.assert_superficie('tests/v2.html', 140)
 
     def test_find_search_item_superficie_v1(self):
-        self.assert_nbpieces('tests/v2.html', '5')
+        self.assert_nbpieces('tests/v2.html', 5)
 
     def test_find_search_item_prix_v2(self):
-        self.assert_prix('tests/v2.html', '74990')
+        self.assert_prix('tests/v2.html', 74990)
         
     def test_find_search_item_commune_v2(self):
         self.assert_commune('tests/v2.html', 'Saint-Aubin-des-Châteaux')

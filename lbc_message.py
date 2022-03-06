@@ -60,14 +60,14 @@ class LbcMessage:
         if description is None:
             return None
         m = re.search(self.REGEXP_SUPERFICIE, description)
-        return m.group('superficie') if m is not None else None
+        return int(m.group('superficie')) if m is not None else None
 
     def _find_search_item_nb_pieces(self, parent_item):
         description = self._find_search_item_description(parent_item)
         if description is None:
             return None
         m = re.search(self.REGEXP_NBPIECES, description)
-        return m.group('nb_pieces') if m is not None else None
+        return int(m.group('nb_pieces')) if m is not None else None
 
 
     def _find_search_item_description(self, parent_item):
@@ -76,7 +76,7 @@ class LbcMessage:
 
     def _find_search_item_prix(self, parent_item):
         element = parent_item.find(self.finder.ITEM_PRIX)
-        return element.text.split(' ')[0] if element is not None else None
+        return int(element.text.split(' ')[0]) if element is not None else None
 
     def _find_search_item_commune_cp(self, parent_item):
         element = parent_item.find(self.finder.ITEM_COMMUNE)
