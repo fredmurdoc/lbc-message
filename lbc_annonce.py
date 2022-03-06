@@ -21,7 +21,10 @@ class LbcAnnonce():
 
     def extract_metadatas(self):
         p_data_annonce = self.soup.find('p', attrs={'data-qa-id' : "adview_date"})
-        return { 'date_annonce' : datetime.strptime(p_data_annonce.text, '%d/%m/%Y à %H:%M').strftime('%d/%m/%Y %H:%M') if p_data_annonce is not None else None}
+        date_annonce = datetime.strptime(p_data_annonce.text, '%d/%m/%Y à %H:%M').strftime('%d/%m/%Y %H:%M') if p_data_annonce is not None else None
+        p_data_prix = self.soup.find('div', attrs={'data-qa-id' : "adview_price"})
+        prix_annonce = int(p_data_prix.text.replace('€', '').replace(' ', '').replace('\u202f', '').replace('\u202f', '\xa0')) if p_data_prix is not None else None
+        return { 'date_annonce' : date_annonce, 'prix': prix_annonce}
 
     def extract_criteres(self):
         criteres = self.soup.find(string='Critères')

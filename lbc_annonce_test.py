@@ -49,21 +49,21 @@ class TestLbcAnnonce(unittest.TestCase):
         annonce = LbcAnnonce(self.good_file)
         metadatas = annonce.extract_metadatas()
         self.assertIsNotNone(metadatas)
-        self.assertEquals(metadatas, {'date_annonce' : datetime.strptime('23/02/2022 10:04', '%d/%m/%Y %H:%M')})
+        self.assertEquals(metadatas, {'date_annonce' : '23/02/2022 10:04', 'prix': 42400})
         del(annonce)
 
     def test_get_extract_metadatas_ok2(self):
         annonce = LbcAnnonce(self.good_file2)
         metadatas = annonce.extract_metadatas()
         self.assertIsNotNone(metadatas)
-        self.assertEquals(metadatas, {'date_annonce' : datetime.strptime('02/02/2022 09:04', '%d/%m/%Y %H:%M')})
+        self.assertEquals(metadatas, {'date_annonce' : '02/02/2022 09:04', 'prix': 65000})
         del(annonce)
 
     def test_get_extract_metadatas_ko(self):
         annonce = LbcAnnonce(self.bad_file)
         metadatas = annonce.extract_metadatas()
         self.assertIsNotNone(metadatas)
-        self.assertEquals(metadatas, {'date_annonce' : None})
+        self.assertEquals(metadatas, {'date_annonce' : None, 'prix': None})
         del(annonce)
 
     def test_get_criteres_ko(self):
