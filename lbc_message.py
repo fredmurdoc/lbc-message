@@ -11,7 +11,7 @@ class LbcMessageXpathFinderV1():
     ITEMS_PARENT_TAG_TR = '//td/a[contains(@href, "[MYSRCH]") and span]/../..'
     ITEM_IMAGE_STYLE = './td[1]/div'
     ITEM_URL = './td[2]/a'
-    ITEM_DESCRIPTION = './td[2]/a/span[1]'
+    ITEM_INTITULE = './td[2]/a/span[1]'
     ITEM_PRIX = './td[2]/a/span[2]'
     ITEM_COMMUNE = './td[2]/a/div/span[1]'
 
@@ -19,7 +19,7 @@ class LbcMessageXpathFinderV2():
     ITEMS_PARENT_TAG_TR = '//td[a and table]/a[contains(@href, "[MYSRCH]")]/../..'
     ITEM_IMAGE_STYLE = './td[1]/div'
     ITEM_URL = './td/a[contains(@href, "[MYSRCH]") and span]'
-    ITEM_DESCRIPTION = './td[2]/a/span[1]'
+    ITEM_INTITULE = './td[2]/a/span[1]'
     ITEM_PRIX = './td[2]/a/span[2]'
     ITEM_COMMUNE = './td[2]/a/div/span[1]'
 
@@ -56,22 +56,22 @@ class LbcMessage:
         return element.attrib['href'] if element is not None else None
 
     def _find_search_item_superficie(self, parent_item):
-        description = self._find_search_item_description(parent_item)
+        description = self._find_search_ITEM_INTITULE(parent_item)
         if description is None:
             return None
         m = re.search(self.REGEXP_SUPERFICIE, description)
         return int(m.group('superficie')) if m is not None else None
 
     def _find_search_item_nb_pieces(self, parent_item):
-        description = self._find_search_item_description(parent_item)
+        description = self._find_search_ITEM_INTITULE(parent_item)
         if description is None:
             return None
         m = re.search(self.REGEXP_NBPIECES, description)
         return int(m.group('nb_pieces')) if m is not None else None
 
 
-    def _find_search_item_description(self, parent_item):
-        element = parent_item.find(self.finder.ITEM_DESCRIPTION)
+    def _find_search_ITEM_INTITULE(self, parent_item):
+        element = parent_item.find(self.finder.ITEM_INTITULE)
         return element.text if element is not None else None
 
     def _find_search_item_prix(self, parent_item):
@@ -112,7 +112,7 @@ class LbcMessage:
         'created_at' : datetime.now().strftime('%Y-%m-%d'),
         'url' : self._find_search_item_url(parent_item),
         'prix' : self._find_search_item_prix(parent_item),
-        'description' : self._find_search_item_description(parent_item),
+        'intitule' : self._find_search_ITEM_INTITULE(parent_item),
         'commune' : self._find_search_item_commune(parent_item),
         'code_postal' : self._find_search_item_commune_codepostal(parent_item),
         'image_url' : self._find_search_item_image_url(parent_item),

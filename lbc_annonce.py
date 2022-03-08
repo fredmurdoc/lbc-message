@@ -23,8 +23,9 @@ class LbcAnnonce():
         p_data_annonce = self.soup.find('p', attrs={'data-qa-id' : "adview_date"})
         date_annonce = datetime.strptime(p_data_annonce.text, '%d/%m/%Y à %H:%M').strftime('%d/%m/%Y %H:%M') if p_data_annonce is not None else None
         p_data_prix = self.soup.find('div', attrs={'data-qa-id' : "adview_price"})
+        p_data_description = self.soup.find('div', attrs={'data-qa-id' : 'adview_description_container'})
         prix_annonce = int(p_data_prix.text.replace('€', '').replace(' ', '').replace('\u202f', '').replace('\u202f', '\xa0')) if p_data_prix is not None else None
-        return { 'date_annonce' : date_annonce, 'prix': prix_annonce}
+        return { 'date_annonce' : date_annonce, 'prix': prix_annonce, 'description' : p_data_description.text if p_data_description is not None else None}
 
     def extract_criteres(self):
         criteres = self.soup.find(string='Critères')
