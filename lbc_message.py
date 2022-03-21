@@ -26,6 +26,7 @@ class LbcMessageXpathFinderV2():
 class LbcMessage:
     REGEXP_SUPERFICIE = r'.+\s+(?P<superficie>[0-9]+)\s+m\u00b2.*'
     REGEXP_NBPIECES= r'.+\s+(?P<nb_pieces>[0-9]+)\s+pièce.\s+.*'
+    REGEXP_COMMUNE_CP= r'\s*(?P<commune>[^0-9]+)\s+(?P<cp>[0-9]{5})\s*'
     def __init__(self):
         self.finder = None
         self.date = None
@@ -84,11 +85,17 @@ class LbcMessage:
 
     def _find_search_item_commune(self, parent_item):
         com_cp = self._find_search_item_commune_cp(parent_item)
-        return com_cp.split(' ')[0]
+        if com_cp is None:
+            return None
+        m = re.search(self.REGEXP_COMMUNE_CP, com_cp)
+        return m.group('commune') if m is not None else None
 
     def _find_search_item_commune_codepostal(self, parent_item):
         com_cp = self._find_search_item_commune_cp(parent_item)
-        return com_cp.split(' ')[1]
+        if com_cp is None:
+            return None
+        m = re.search(self.REGEXP_COMMUNE_CP, com_cp)
+        return m.group('cp') if m is not None else None
 
 
     def _find_search_item_image_url(self, parent_item):
