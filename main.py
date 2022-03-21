@@ -19,6 +19,16 @@ def main():
     filter.fromEmail('leboncoin').subject("eVentes immobilières")
     messages.extend(gmail.listMessages(filter))
 
+
+    filter = GmailFilter()
+    filter.fromEmail('leboncoin').subject("Chateaubriand")
+    messages.extend(gmail.listMessages(filter))
+
+    filter = GmailFilter()
+    filter.fromEmail('leboncoin').subject("maison")
+    messages.extend(gmail.listMessages(filter))
+
+
     print("retrieve %d messages " % len(messages))
     json_content = []
     for msg in messages:

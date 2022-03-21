@@ -4,7 +4,7 @@ import sys
 import urllib3
 items_fp =open('items.json', 'r')
 items = json.load(items_fp)
-nb_to_open=40
+nb_to_open=50
 counter = 0
 urls_to_open = []
 
