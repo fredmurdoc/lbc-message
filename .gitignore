@@ -1,4 +1,6 @@
 *.json
+*.tgz
+*.gz
 results/*
 annonces/*
 __pycache__/*
