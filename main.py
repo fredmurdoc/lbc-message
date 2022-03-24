@@ -4,7 +4,10 @@ from posixpath import dirname
 from datetime import datetime
 
 def main():
-    gmail = Gmail(credentials_file="%s/credentials.json" % dirname(__file__), token_file="%s/token.json" % dirname(__file__))
+    cred_file = "%s/credentials.json" % dirname(__file__)
+    token_file = "%s/token.json" % dirname(__file__)
+    print("load files %s and %s " % (cred_file, token_file))
+    gmail = Gmail(credentials_file=cred_file, token_file=token_file)
     filter = GmailFilter()
     originDate = datetime.strptime('01/01/2015', '%d/%m/%Y')
     filter.fromEmail('leboncoin').subject("Maison").fromDate(originDate)
