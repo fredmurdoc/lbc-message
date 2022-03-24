@@ -5,3 +5,4 @@ python $(pwd)/etat_annonces.py
 cp items.json ../django_projects/rechercheMaison/data/maisons.json
 cd ../django_projects/rechercheMaison
 python manage.py runscript import_maisons
+./sauvegarde.sh
