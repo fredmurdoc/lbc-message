@@ -9,9 +9,10 @@ if [ "${rep}" == "O" ]; then
 fi
 python $(pwd)/extract_items.py
 python $(pwd)/enrich_items.py
-
-cp items.json ../django_projects/rechercheMaison/data/maisons.json
+echo "Copie des items vers le project Django et import"
+cp items.json ../django_projects/rechercheMaison/data/annonces.json
 cd ../django_projects/rechercheMaison
-python manage.py runscript import_maisons
+./update.sh
 cd -
+echo "sauvegarde des annonces"
 ./sauvegarde.sh

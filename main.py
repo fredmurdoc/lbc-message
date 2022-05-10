@@ -8,30 +8,19 @@ def main():
     token_file = "%s/token.json" % dirname(__file__)
     print("load files %s and %s " % (cred_file, token_file))
     gmail = Gmail(credentials_file=cred_file, token_file=token_file)
-    filter = GmailFilter()
+    
     originDate = datetime.strptime('01/01/2015', '%d/%m/%Y')
-    filter.fromEmail('leboncoin').subject("Maison").fromDate(originDate)
     
-    messages = gmail.listMessages(filter)
+    subjects = ['Maison', 'Ventes immobilières', 'eVentes immobilières', 'Chateaubriand', 'maison']
+    messages = None
+    for subject in subjects:
+        filter = GmailFilter()
+        filter.fromEmail('leboncoin').subject(subject).fromDate(originDate)
+        if messages is None:
+            messages = gmail.listMessages(filter)
+        else:
+            messages.extend(gmail.listMessages(filter))        
     
-    filter = GmailFilter()
-    filter.fromEmail('leboncoin').subject("Ventes immobilières").fromDate(originDate)
-    messages.extend(gmail.listMessages(filter))
-
-    filter = GmailFilter()
-    filter.fromEmail('leboncoin').subject("eVentes immobilières")
-    messages.extend(gmail.listMessages(filter))
-
-
-    filter = GmailFilter()
-    filter.fromEmail('leboncoin').subject("Chateaubriand")
-    messages.extend(gmail.listMessages(filter))
-
-    filter = GmailFilter()
-    filter.fromEmail('leboncoin').subject("maison")
-    messages.extend(gmail.listMessages(filter))
-
-
     print("retrieve %d messages " % len(messages))
     json_content = []
     for msg in messages:
