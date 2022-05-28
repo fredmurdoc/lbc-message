@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import logging
 import sys
 from datetime import datetime
+import urllib.parse
 
 class LbcAnnonce():
     fp_html = None
@@ -14,6 +15,14 @@ class LbcAnnonce():
     def __del__(self):
         if self.fp_html is not None:
             self.fp_html.close()
+
+    def extract_id(self):
+        link_id = self.soup.find('link', attrs={'rel' : "canonical"})
+        if link_id is not None:
+            #https://www.leboncoin.fr/vi/1677362305.htm
+            url = urllib.parse.urlparse(link_id.attrs['href'])
+            self.id_annonce =  url.path.replace('/vi/', '').replace('.htm', '')
+        return self.id_annonce
 
     def est_desactivee(self):
         annonce_desactivee = self.soup.find(string='Cette annonce est désactivée')

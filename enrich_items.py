@@ -27,7 +27,7 @@ for key_item, item in enumerate(items):
         print('analyse annonce %s' % html_file_annonce_path)
         annonce = LbcAnnonce(html_file_annonce_path)
         item['desactivee'] =  annonce.est_desactivee()
-            
+        item['id_annonce'] = annonce.extract_id()
         logging.debug("item['desactivee'] %s " % item['desactivee'])
         if item['desactivee'] == False:
             criteres = annonce.extract_criteres()

@@ -1,4 +1,8 @@
 python $(pwd)/main.py
+
+if [ ! -f items.json ]; then
+    python $(pwd)/extract_items.py
+fi
 python $(pwd)/etat_annonces.py
 read -p "ouvrir navigateur ou telecharger annonces ? O/n" rep
 
