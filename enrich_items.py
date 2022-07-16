@@ -6,7 +6,7 @@ import urllib3
 from datetime import datetime
 from lbc_annonce import LbcAnnonce
 from bs4 import BeautifulSoup
-
+import time
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 items_file = 'items.json'
@@ -34,7 +34,6 @@ for key_item, item in enumerate(items):
             if criteres is not None:
                 logging.debug('criteres')
                 logging.debug(criteres)
-                item['updated_at'] = is_updated_at
                 for k in criteres.keys():
                     if criteres[k] is not None:
                         item[k] = criteres[k] 
@@ -46,18 +45,22 @@ for key_item, item in enumerate(items):
             if metadatas is not None:
                 logging.debug('metadatas')
                 logging.debug(metadatas)
-                item['updated_at'] = is_updated_at
                 for k in metadatas.keys():
                     if metadatas[k] is not None:
                         item[k] = metadatas[k] 
             else:
                 logging.debug(metadatas)
                 logging.error('annonce %s est active mais pas de metadatas', html_file_annonce_path)
-
-
         else:
             if 'date_desactivation' not in item:
                 item['date_desactivation'] = is_updated_at
+        # on fixe la date de maj à la date de mise à jour du fichier HTML
+        time_html= os.path.getmtime(html_file_annonce_path)
+        convert_time = time.localtime(time_html)
+        date_fichier = time.strftime('%Y-%m-%d', convert_time)
+        item['updated_at'] = max(date_fichier, item['created_at'], item['date_mail'])
+        print('annonce %s date maj %s ' % (item['id_annonce'], item['updated_at']))
+                        
         #update collections
         items[key_item] = item  
     else:
