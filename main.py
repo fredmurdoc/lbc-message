@@ -1,7 +1,8 @@
+from sqlite3 import Date
 from gmail import Gmail, GmailFilter
 from lbc_message import LbcMessage
 from posixpath import dirname
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def main():
     cred_file = "%s/credentials.json" % dirname(__file__)
@@ -10,8 +11,9 @@ def main():
     gmail = Gmail(credentials_file=cred_file, token_file=token_file)
     
     originDate = datetime.strptime('01/01/2015', '%d/%m/%Y')
+    originDate = datetime.now() - timedelta(weeks=4)
     
-    subjects = ['Maison', 'Ventes immobilières', 'eVentes immobilières', 'Chateaubriand', 'maison']
+    subjects = ['Maison', 'Ventes immobilières', 'eVentes immobilières', 'Chateaubriand', 'maison', 'maisons']
     messages = None
     for subject in subjects:
         filter = GmailFilter()
