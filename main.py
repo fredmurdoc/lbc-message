@@ -12,7 +12,7 @@ def main():
     
     originDate = datetime.strptime('01/01/2015', '%d/%m/%Y')
     originDate = datetime.now() - timedelta(weeks=4)
-    
+    print("date de recherche de départ %s" % originDate.strftime('%d/%m/%Y'))
     subjects = ['Maison', 'Ventes immobilières', 'eVentes immobilières', 'Chateaubriand', 'maison', 'maisons']
     messages = None
     for subject in subjects:
@@ -26,8 +26,9 @@ def main():
     print("retrieve %d messages " % len(messages))
     json_content = []
     for msg in messages:
-        print("msg %s" % msg['id'])
         real_message = gmail.getMessage(msg['id'])
+        date_received = datetime.fromtimestamp(float(real_message['internalDate'])/1000)
+        print("msg id [%s], recu [%s] : %s" % (msg['id'], date_received, real_message['snippet']))
         try:
             gmail.saveMessageToFolder(folder = '%s/results' % dirname(__file__), msg = real_message, overwrite=False)
             print("message %s saved" % msg['id'])
