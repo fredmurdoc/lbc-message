@@ -21,30 +21,22 @@ def extract_items():
             lbc_msg.loadFromFile(f)
             try:
                 extracted = lbc_msg.extract_items()
-                # on ajoute des metadonnées (dont le nom du fichier)
-                for i, ext in enumerate(extracted):
-                    ext['payload_file'] = f
-                    extracted[i] = ext
                 json_content.extend(extracted)
             except Exception as e:
                 print(e)    
     #on recherche les annonces en doublons 
     for index, item in enumerate(json_content):
-        can_append = False
-        key =item['url']
-        value = { 'date': item['date_mail'], 'index': index, 'payload_file': item['payload_file']}
+        print(index)
         if item['url'] not in url_annonces.keys():
-            can_append = True
+            url_annonces[item['url']] = { 'date': item['date_mail'], 'index': index}
         else: #si la date croisée est plus recente on la conserve comme reference et 
             if url_annonces[item['url']]['date'] < item['date_mail']:
-                can_append = True
-        if can_append:
-            url_annonces[key] = value
+                url_annonces[item['url']] = { 'date': item['date_mail'], 'index': index}
     
     items = []
     # on ajoute que les items a conserver
     for url, item_to_keep in url_annonces.items():
-        #print('annonce a ouvrir (%s), fichier %s ' % (item_to_keep['date'], item_to_keep['payload_file'] ))
+        print(item_to_keep)
         items.append(json_content[item_to_keep['index']])
 
     with open('items.json', 'w') as fp:

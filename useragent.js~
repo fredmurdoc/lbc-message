@@ -1,0 +1,7 @@
+var page = require('webpage').create();
+page.open('https://www.leboncoin.fr/vi/1997275853.htm#xtor=ES-3999-[MYSRCH]', function(status) {
+    setTimeout(function() {
+        page.render('google.png');
+        phantom.exit();
+    }, 200);
+});

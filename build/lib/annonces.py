@@ -18,11 +18,10 @@ for item in items:
     html_file_annonce = url.path.replace(lbc_part_to_delete, '').replace('/', '')
     html_file_annonce_path ='annonces/%s' % html_file_annonce
     if os.path.exists(html_file_annonce_path):
-        #print('file %s exists pass' % html_file_annonce_path)
+        print('file %s exists pass' % html_file_annonce_path)
         continue
     counter += 1
     if counter <= nb_to_open:
-        print('fichier mail recu à ouvrir : %s' % item['payload_file'])
         urls_to_open.append(item['url'])
     else:
         print("collected %d urls stop" % len(urls_to_open))
