@@ -4,6 +4,7 @@ from datetime import datetime
 from lxml import etree
 import re
 import logging
+import urllib.parse
 import os.path
 from enum import Enum
         
@@ -33,10 +34,15 @@ class LbcMessageFromApp:
         return results
         
     def _extract_dict_from_item(self, item):
+        url = item
+        url_p = urllib.parse.urlparse(url)
+        id_annonce = url_p.path.split('/')[-1].replace(".htm", '')  
+    
         return {
         'date_mail' : datetime.fromtimestamp(self.date).strftime('%Y-%m-%d') if self.date is not None else None,
         'created_at' : datetime.fromtimestamp(self.date).strftime('%Y-%m-%d') if self.date is not None else None,
-        'url' : item,
+        'url' : url,
+        'id_annonce': id_annonce, 
         'prix' : 0,
         'intitule' : "",
         'commune' : "",

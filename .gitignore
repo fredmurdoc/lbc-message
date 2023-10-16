@@ -2,5 +2,6 @@
 *.tgz
 *.gz
 results/*
+results_from_app/*
 annonces/*
 __pycache__/*

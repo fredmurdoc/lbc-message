@@ -5,6 +5,7 @@ from lxml import etree
 import re
 import logging
 import os.path
+import urllib.parse
 from enum import Enum
         
 class LbcMessageXpathFinderV1():
@@ -114,10 +115,17 @@ class LbcMessage:
 
         
     def _extract_dict_from_parent_item(self, parent_item):
+        url = self._find_search_item_url(parent_item)
+        url_p = urllib.parse.urlparse(url)
+        if url_p.path.endswith('/'):
+            id_annonce = url_p.path.split('/')[-2].replace(".htm", '')  
+        else:
+            id_annonce = url_p.path.split('/')[-1].replace(".htm", '')  
         return {
         'date_mail' : datetime.fromtimestamp(self.date).strftime('%Y-%m-%d') if self.date is not None else None,
         'created_at' : datetime.fromtimestamp(self.date).strftime('%Y-%m-%d') if self.date is not None else None,
-        'url' : self._find_search_item_url(parent_item),
+        'url' : url,
+        'id_annonce' : id_annonce,
         'prix' : self._find_search_item_prix(parent_item),
         'intitule' : self._find_search_ITEM_INTITULE(parent_item),
         'commune' : self._find_search_item_commune(parent_item),

@@ -3,11 +3,12 @@ import logging
 import sys
 from datetime import datetime
 import urllib.parse
-
+import os.path
 class LbcAnnonce():
     fp_html = None
     def __init__(self, html_file):
         self.fp_html = open(html_file, 'r')
+        self.id_annonce = os.path.basename(html_file).replace(".htm", '')
         self.soup = BeautifulSoup(self.fp_html, features='lxml')
         if len(self.soup) == 0:
             raise Exception("file %s is empty" % self.fp_html.name)
@@ -15,15 +16,7 @@ class LbcAnnonce():
     def __del__(self):
         if self.fp_html is not None:
             self.fp_html.close()
-
-    def extract_id(self):
-        link_id = self.soup.find('link', attrs={'rel' : "canonical"})
-        if link_id is not None:
-            #https://www.leboncoin.fr/vi/1677362305.htm
-            url = urllib.parse.urlparse(link_id.attrs['href'])
-            self.id_annonce =  url.path.replace('/vi/', '').replace('.htm', '')
-        return self.id_annonce
-
+            
     def est_desactivee(self):
         annonce_desactivee = self.soup.find(string='Cette annonce est désactivée')
         return annonce_desactivee is not None

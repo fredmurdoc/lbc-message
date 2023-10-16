@@ -5,12 +5,13 @@ from lbc_annonce import LbcAnnonce
 import logging
 import sys
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 class TestLbcAnnonce(unittest.TestCase):
     good_file = 'tests/2013210401.htm'
     bad_file = 'tests/2008301422.htm'
     good_file2 = 'tests/2058131180.htm'
+    good_file3 = 'tests/2418312808.htm'
     nonexistent = 'tests/OLKJLKJL.htm'
     empty = 'tests/empty.htm'
 
@@ -45,6 +46,13 @@ class TestLbcAnnonce(unittest.TestCase):
         self.assertEquals(criteres, {'a_terrain' : False,  'surface' :  156, 'nb_pieces' :  8 , 'type_maison' : 'maison', 'surface_terrain' : None})
         del(annonce)
 
+    def test_get_criteres_ok3(self):
+        annonce = LbcAnnonce(self.good_file3)
+        criteres = annonce.extract_criteres()
+        self.assertIsNotNone(criteres)
+        self.assertEquals(criteres, {'a_terrain' : False,  'surface' :  156, 'nb_pieces' :  8 , 'type_maison' : 'maison', 'surface_terrain' : None})
+        del(annonce)
+
     def test_get_extract_metadatas_ok(self):
         annonce = LbcAnnonce(self.good_file)
         metadatas = annonce.extract_metadatas()
@@ -54,6 +62,13 @@ class TestLbcAnnonce(unittest.TestCase):
 
     def test_get_extract_metadatas_ok2(self):
         annonce = LbcAnnonce(self.good_file2)
+        metadatas = annonce.extract_metadatas()
+        self.assertIsNotNone(metadatas)
+        self.assertEquals(metadatas, {'date_annonce' : '02/02/2022 09:04', 'prix': 65000})
+        del(annonce)
+
+    def test_get_extract_metadatas_ok3(self):
+        annonce = LbcAnnonce(self.good_file3)
         metadatas = annonce.extract_metadatas()
         self.assertIsNotNone(metadatas)
         self.assertEquals(metadatas, {'date_annonce' : '02/02/2022 09:04', 'prix': 65000})

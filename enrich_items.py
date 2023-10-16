@@ -7,8 +7,10 @@ from datetime import datetime
 from lbc_annonce import LbcAnnonce
 from bs4 import BeautifulSoup
 import time
+import re
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
+html_file_re = re.compile('.+\/(\d+\.htm).*')
 items_file = 'items.json'
 items_fp =open(items_file, 'r')
 
@@ -19,15 +21,19 @@ lbc_part_to_delete = '/vi/'
 is_updated_at = datetime.now().strftime('%Y-%m-%d')
 
 for key_item, item in enumerate(items):
-    
-    url = urllib3.util.parse_url(item['url'])
-    html_file_annonce = url.path.replace(lbc_part_to_delete, '').replace('/', '')
+    matched = html_file_re.match(item['url'])
+    if matched:
+        html_file_annonce = matched.groups(1)[0]
+    else :    
+        url = urllib3.util.parse_url(item['url'])
+        html_file_annonce = url.path.split('/')[-1]
     html_file_annonce_path ='annonces/%s' % html_file_annonce
+    
     if os.path.exists(html_file_annonce_path):
         print('analyse annonce %s' % html_file_annonce_path)
         annonce = LbcAnnonce(html_file_annonce_path)
         item['desactivee'] =  annonce.est_desactivee()
-        item['id_annonce'] = annonce.extract_id()
+        item['id_annonce'] =  annonce.id_annonce
         logging.debug("item['desactivee'] %s " % item['desactivee'])
         if item['desactivee'] == False:
             criteres = annonce.extract_criteres()
