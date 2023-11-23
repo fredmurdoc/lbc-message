@@ -94,6 +94,8 @@ def extract_items_from_app():
     return items
 
 
+    
+
 
 if __name__ == '__main__':
     items = []

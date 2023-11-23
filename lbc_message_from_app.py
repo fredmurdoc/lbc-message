@@ -7,7 +7,7 @@ import logging
 import urllib.parse
 import os.path
 from enum import Enum
-        
+from lbc_message import MESSAGE_STRUCT
 class LbcMessageFromApp:
     def __init__(self):
         self.link_finder_re = re.compile('.*(https://www.leboncoin.fr/ventes_immobilieres/.+\.htm).*')
@@ -32,25 +32,21 @@ class LbcMessageFromApp:
         if self.content != None:
             results.append(self.content)
         return results
-        
+
     def _extract_dict_from_item(self, item):
         url = item
         url_p = urllib.parse.urlparse(url)
         id_annonce = url_p.path.split('/')[-1].replace(".htm", '')  
-    
-        return {
+        mystruct = MESSAGE_STRUCT.copy()
+        myvalues = {
         'date_mail' : datetime.fromtimestamp(self.date).strftime('%Y-%m-%d') if self.date is not None else None,
         'created_at' : datetime.fromtimestamp(self.date).strftime('%Y-%m-%d') if self.date is not None else None,
         'url' : url,
         'id_annonce': id_annonce, 
-        'prix' : 0,
-        'intitule' : "",
-        'commune' : "",
-        'code_postal' : "",
-        'image_url' : "",
-        'superficie' : "",
-        'nb_pieces' : ""
+        'prix' : 0
         }
+        mystruct.update(myvalues)
+        return mystruct
     
     def extract_items(self):
         extract = []

@@ -5,10 +5,12 @@ import sys
 import urllib3
 from datetime import datetime
 from lbc_annonce import LbcAnnonce
+from lbc_message import MESSAGE_STRUCT
 from bs4 import BeautifulSoup
 import time
 import re
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 html_file_re = re.compile('.+\/(\d+\.htm).*')
 items_file = 'items.json'
@@ -19,7 +21,7 @@ items = json.load(items_fp)
 lbc_part_to_delete = '/vi/'
 
 is_updated_at = datetime.now().strftime('%Y-%m-%d')
-
+# on parcours le fichier items.json et on regarde les annonces correspondantes dans les repertoire annocnes
 for key_item, item in enumerate(items):
     matched = html_file_re.match(item['url'])
     if matched:
@@ -71,6 +73,59 @@ for key_item, item in enumerate(items):
         items[key_item] = item  
     else:
         continue    
+
+ids_annonces = [i['id_annonce'] for i in items]
+# on scnanne tout ce qu'il y a dans le repertoie annonces et celles qui ne sont pas dans items.json on les crée
+directory = 'annonces'
+
+for annonce_file in os.listdir(directory):
+    html_file_annonce_path = os.path.join(directory, annonce_file)
+    logging.info("parse file %s" % html_file_annonce_path)
+    id_annonce =os.path.splitext(annonce_file)[0]
+    # si l'id annonce est dans items.json on passe
+    if id_annonce  in  ids_annonces:
+        continue
+    
+    extension = os.path.splitext(annonce_file)[1]
+    # checking if it is a file
+    if os.path.isfile(html_file_annonce_path) and extension == '.htm':
+        print('NEW ANNONCE IN DIR !! %s' % id_annonce )
+        #get payload file
+        print('analyze payload file %s' % annonce_file)
+        #analyse it
+        lbc_annonce = LbcAnnonce(html_file=html_file_annonce_path)
+        item = MESSAGE_STRUCT.copy()
+        item['id_annonce'] = id_annonce
+        item['desactivee'] =  lbc_annonce.est_desactivee()
+        
+        logging.info("item %s desactivee : %s " % (id_annonce, item['desactivee']))
+        if item['desactivee'] == False:
+            criteres = lbc_annonce.extract_criteres()
+            if criteres is not None:
+                logging.debug('criteres')
+                logging.debug(criteres)
+                item['updated_at'] = is_updated_at
+                for k in criteres.keys():
+                    if criteres[k] is not None:
+                        item[k] = criteres[k] 
+            else:
+                logging.debug(criteres)
+                logging.error('annonce %s est active mais pas de criteres', html_file_annonce_path)
+            
+        metadatas = lbc_annonce.extract_metadatas()
+        if metadatas is not None:
+            logging.debug('metadatas')
+            logging.debug(metadatas)
+            item['updated_at'] = is_updated_at
+            for k in metadatas.keys():
+                if metadatas[k] is not None:
+                    item[k] = metadatas[k] 
+        else:
+            logging.debug(metadatas)
+            logging.error('annonce %s est active mais pas de metadatas', html_file_annonce_path)
+        logging.info('append item %s' % id_annonce)
+        items.append(item)
+
 
 with open(items_file, 'w') as fp:
     json.dump(items, fp)

@@ -7,7 +7,7 @@ import logging
 import os.path
 import urllib.parse
 from enum import Enum
-        
+
 class LbcMessageXpathFinderV1():
     ITEMS_PARENT_TAG_TR = '//td/a[contains(@href, "[MYSRCH]") and span]/../..'
     ITEM_IMAGE_STYLE = './td[1]/div'
@@ -23,6 +23,20 @@ class LbcMessageXpathFinderV2():
     ITEM_INTITULE = './td[2]/a/span[1]'
     ITEM_PRIX = './td[2]/a/span[2]'
     ITEM_COMMUNE = './td[2]/a/div/span[1]'
+
+MESSAGE_STRUCT = {
+        'date_mail' : None,
+        'created_at' : None,
+        'url' : None,
+        'id_annonce' : None,
+        'prix' : None,
+        'intitule' : None,
+        'commune' : None,
+        'code_postal' : None,
+        'image_url' : None,
+        'superficie' : None,
+        'nb_pieces' : None
+        }
 
 class LbcMessage:
     REGEXP_SUPERFICIE = r'.+\s+(?P<superficie>[0-9]+)\s+m\u00b2.*'
@@ -121,7 +135,8 @@ class LbcMessage:
             id_annonce = url_p.path.split('/')[-2].replace(".htm", '')  
         else:
             id_annonce = url_p.path.split('/')[-1].replace(".htm", '')  
-        return {
+        mystruct = MESSAGE_STRUCT.copy()
+        myvalues ={
         'date_mail' : datetime.fromtimestamp(self.date).strftime('%Y-%m-%d') if self.date is not None else None,
         'created_at' : datetime.fromtimestamp(self.date).strftime('%Y-%m-%d') if self.date is not None else None,
         'url' : url,
@@ -134,6 +149,8 @@ class LbcMessage:
         'superficie' : self._find_search_item_superficie(parent_item),
         'nb_pieces' : self._find_search_item_nb_pieces(parent_item)
         }
+        mystruct.update(myvalues)
+        return mystruct
     
     def extract_items(self):
         extract = []

@@ -8,7 +8,7 @@ import sys
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 def extract_annonces():
     items = []
-    items_file = 'items.json'
+    items_file = 'items_from_dir.json'
     url_annonces = {}
     json_content = []
     is_updated_at = datetime.now().strftime('%Y-%m-%d')
