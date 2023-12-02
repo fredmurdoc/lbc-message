@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 import time
 import re
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 html_file_re = re.compile('.+\/(\d+\.htm).*')
 items_file = 'items.json'
@@ -23,6 +23,7 @@ lbc_part_to_delete = '/vi/'
 is_updated_at = datetime.now().strftime('%Y-%m-%d')
 # on parcours le fichier items.json et on regarde les annonces correspondantes dans les repertoire annocnes
 for key_item, item in enumerate(items):
+    logging.debug("FROM ITEMS JSON item : %s" % item)
     matched = html_file_re.match(item['url'])
     if matched:
         html_file_annonce = matched.groups(1)[0]
@@ -32,7 +33,7 @@ for key_item, item in enumerate(items):
     html_file_annonce_path ='annonces/%s' % html_file_annonce
     
     if os.path.exists(html_file_annonce_path):
-        print('analyse annonce %s' % html_file_annonce_path)
+        logging.info('FROM ITEMS JSON : analyse annonce %s' % html_file_annonce_path)
         annonce = LbcAnnonce(html_file_annonce_path)
         item['desactivee'] =  annonce.est_desactivee()
         item['id_annonce'] =  annonce.id_annonce
@@ -80,25 +81,32 @@ directory = 'annonces'
 
 for annonce_file in os.listdir(directory):
     html_file_annonce_path = os.path.join(directory, annonce_file)
-    logging.info("parse file %s" % html_file_annonce_path)
+    logging.info("FROM HTML FILE: parse file %s" % html_file_annonce_path)
     id_annonce =os.path.splitext(annonce_file)[0]
     # si l'id annonce est dans items.json on passe
     if id_annonce  in  ids_annonces:
+        logging.debug("FROM HTML FILE: annonce %s already present" % (id_annonce))
         continue
+    
     
     extension = os.path.splitext(annonce_file)[1]
     # checking if it is a file
     if os.path.isfile(html_file_annonce_path) and extension == '.htm':
-        print('NEW ANNONCE IN DIR !! %s' % id_annonce )
+        logging.info('FROM HTML FILE: NEW ANNONCE !! %s' % id_annonce )
         #get payload file
-        print('analyze payload file %s' % annonce_file)
+        logging.info('FROM HTML FILE: analyze payload file %s' % annonce_file)
+        time_html= os.path.getmtime(html_file_annonce_path)
+        convert_time = time.localtime(time_html)
+        date_fichier = time.strftime('%Y-%m-%d', convert_time)
         #analyse it
         lbc_annonce = LbcAnnonce(html_file=html_file_annonce_path)
         item = MESSAGE_STRUCT.copy()
         item['id_annonce'] = id_annonce
         item['desactivee'] =  lbc_annonce.est_desactivee()
-        
-        logging.info("item %s desactivee : %s " % (id_annonce, item['desactivee']))
+        item['url'] = 'https://www.leboncoin.fr/ventes_immobilieres/%s.htm' % id_annonce
+        item['created_at'] = date_fichier
+        item['date_mail'] = date_fichier
+        logging.info("FROM HTML FILE: item %s desactivee : %s " % (id_annonce, item['desactivee']))
         if item['desactivee'] == False:
             criteres = lbc_annonce.extract_criteres()
             if criteres is not None:
