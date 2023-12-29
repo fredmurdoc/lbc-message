@@ -33,7 +33,8 @@ def extract_items_from_alerts():
     for index, item in enumerate(json_content):
         can_append = False
         key =item['url']
-        value = { 'date': item['date_mail'], 'index': index, 'payload_file': item['payload_file']}
+        value = { 'date': item['date_mail'], 'index': index, 
+                 'payload_file': item['payload_file']}
         if item['url'] not in url_annonces.keys():
             can_append = True
         else: #si la date croisée est plus recente on la conserve comme reference et 

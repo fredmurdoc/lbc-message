@@ -10,7 +10,8 @@ from bs4 import BeautifulSoup
 import time
 import re
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 html_file_re = re.compile('.+\/(\d+\.htm).*')
 items_file = 'items.json'
