@@ -124,6 +124,20 @@ class TestLbcAnnonce(unittest.TestCase):
                                         'prix': 38500})
         del(annonce)
 
+    def test_get_extract_image_ok5(self):
+        annonce = LbcAnnonce(self.good_file5)
+        img_url = annonce.extract_image()
+        print(img_url)
+        self.assertIsNotNone(img_url)
+        del(annonce)
+
+    def test_get_extract_image_desactive_ok(self):
+        annonce = LbcAnnonce(self.bad_file)
+        img_url = annonce.extract_image()
+        print(img_url)
+        self.assertIsNone(img_url)
+        del(annonce)
+
 
     def test_get_extract_metadatas_ko(self):
         annonce = LbcAnnonce(self.bad_file)

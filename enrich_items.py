@@ -8,7 +8,7 @@ from lbc_annonce import LbcAnnonce
 from bs4 import BeautifulSoup
 import time
 import re
-
+from lbc_message import MESSAGE_STRUCT
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
@@ -57,21 +57,24 @@ for key_item, item in enumerate(items):
                 for k in metadatas.keys():
                     if metadatas[k] is not None:
                         item[k] = metadatas[k] 
-                if 'intitule' in item and item['intitule'] is not None and 'description' in item and item['description'] is not None:
-                    item['intitule'] = item['description']
+                
             else:
                 logging.debug(metadatas)
-                logging.error('annonce %s est active mais pas de metadatas', html_file_annonce_path)
+                logging.error('annonce %s est active mais pas de metadatas', html_file_annonce_path)  
         else:
             if 'date_desactivation' not in item:
                 item['date_desactivation'] = is_updated_at
+        
         # on fixe la date de maj à la date de mise à jour du fichier HTML
         time_html= os.path.getmtime(html_file_annonce_path)
         convert_time = time.localtime(time_html)
         date_fichier = time.strftime('%Y-%m-%d', convert_time)
         item['updated_at'] = max(date_fichier, item['created_at'], item['date_mail'])
         print('annonce %s date maj %s ' % (item['id_annonce'], item['updated_at']))
-                        
+        if 'image_url' not in item or item['image_url'] is None:
+            item['image_url'] = annonce.extract_image()
+        if 'intitule' in item and item['intitule'] is not None and 'description' in item and item['description'] is not None:
+            item['intitule'] = item['description']
         #update collections
         items[key_item] = item  
     else:
@@ -130,11 +133,15 @@ for annonce_file in os.listdir(directory):
             for k in metadatas.keys():
                 if metadatas[k] is not None:
                     item[k] = metadatas[k]
-            if 'intitule' in item and item['intitule'] is not None and 'description' in item and item['description'] is not None:
-                    item['intitule'] = item['description']
+        
         else:
             logging.debug(metadatas)
             logging.error('annonce %s est active mais pas de metadatas', html_file_annonce_path)
+        
+        if 'image_url' not in item or item['image_url'] is None:
+            item['image_url'] = annonce.extract_image()
+        if 'intitule' in item and item['intitule'] is not None and 'description' in item and item['description'] is not None:
+            item['intitule'] = item['description']
         logging.info('append item %s' % id_annonce)
         items.append(item)
 

@@ -46,6 +46,14 @@ class LbcAnnonce():
                 'description' : p_data_description.text if p_data_description is not None else None, 
                 'commune': commune, 'code_postal': cp}
 
+    def extract_image(self):    
+        div_image = self.soup.find('div', {'data-qa-id':"adview_sticky_image"})
+        if div_image is not None:
+            img = div_image.find('img')
+            if img is not None:
+                return img.attrs['src']
+        return None
+    
     def extract_criteres(self):
         criteres = self.soup.find(string='Critères')
         if criteres is None:
