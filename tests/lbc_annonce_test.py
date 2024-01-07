@@ -13,6 +13,7 @@ class TestLbcAnnonce(unittest.TestCase):
     good_file2 = 'tests/2058131180.htm'
     good_file3 = 'tests/2418312808.htm'
     good_file4 = 'tests/2448985471_annonce_venant_partage.htm'
+    good_file5 = 'tests/2363782143.htm'
     nonexistent = 'tests/OLKJLKJL.htm'
     empty = 'tests/empty.htm'
 
@@ -102,6 +103,7 @@ class TestLbcAnnonce(unittest.TestCase):
         annonce = LbcAnnonce(self.good_file4)
         metadatas = annonce.extract_metadatas()
         self.assertIsNotNone(metadatas)
+        print(metadatas['description'])
         self.assertIsNotNone(metadatas['description'])
         del(metadatas['description'])
         self.assertEquals(metadatas, {'date_annonce' :None, 'code_postal': '49520',
@@ -109,6 +111,19 @@ class TestLbcAnnonce(unittest.TestCase):
                                         'date_annonce': None,
                                         'prix': 75000})
         del(annonce)
+
+    def test_get_extract_metadatas_ok5(self):
+        annonce = LbcAnnonce(self.good_file5)
+        metadatas = annonce.extract_metadatas()
+        self.assertIsNotNone(metadatas)
+        self.assertIsNotNone(metadatas['description'])
+        del(metadatas['description'])
+        self.assertEquals(metadatas, {'date_annonce' :None, 'code_postal': '49120',
+                                        'commune': 'Chemillé-en-Anjou ',
+                                        'date_annonce': None,
+                                        'prix': 38500})
+        del(annonce)
+
 
     def test_get_extract_metadatas_ko(self):
         annonce = LbcAnnonce(self.bad_file)

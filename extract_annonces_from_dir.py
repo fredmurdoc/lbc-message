@@ -49,6 +49,8 @@ def extract_annonces():
                 for k in metadatas.keys():
                     if metadatas[k] is not None:
                         item[k] = metadatas[k] 
+                if 'intitule' in item and item['intitule'] is not None and 'description' in item and item['description'] is not None:
+                    item['intitule'] = item['description']
             else:
                 logging.debug(metadatas)
                 logging.error('annonce %s est active mais pas de metadatas', html_file_annonce_path)

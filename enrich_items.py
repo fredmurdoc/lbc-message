@@ -5,7 +5,6 @@ import sys
 import urllib3
 from datetime import datetime
 from lbc_annonce import LbcAnnonce
-from lbc_message import MESSAGE_STRUCT
 from bs4 import BeautifulSoup
 import time
 import re
@@ -58,6 +57,8 @@ for key_item, item in enumerate(items):
                 for k in metadatas.keys():
                     if metadatas[k] is not None:
                         item[k] = metadatas[k] 
+                if 'intitule' in item and item['intitule'] is not None and 'description' in item and item['description'] is not None:
+                    item['intitule'] = item['description']
             else:
                 logging.debug(metadatas)
                 logging.error('annonce %s est active mais pas de metadatas', html_file_annonce_path)
@@ -128,7 +129,9 @@ for annonce_file in os.listdir(directory):
             item['updated_at'] = is_updated_at
             for k in metadatas.keys():
                 if metadatas[k] is not None:
-                    item[k] = metadatas[k] 
+                    item[k] = metadatas[k]
+            if 'intitule' in item and item['intitule'] is not None and 'description' in item and item['description'] is not None:
+                    item['intitule'] = item['description']
         else:
             logging.debug(metadatas)
             logging.error('annonce %s est active mais pas de metadatas', html_file_annonce_path)
