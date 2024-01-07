@@ -139,7 +139,7 @@ for annonce_file in os.listdir(directory):
             logging.error('annonce %s est active mais pas de metadatas', html_file_annonce_path)
         
         if 'image_url' not in item or item['image_url'] is None:
-            item['image_url'] = annonce.extract_image()
+            item['image_url'] = lbc_annonce.extract_image()
         if 'intitule' in item and item['intitule'] is not None and 'description' in item and item['description'] is not None:
             item['intitule'] = item['description']
         logging.info('append item %s' % id_annonce)

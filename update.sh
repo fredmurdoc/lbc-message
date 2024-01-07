@@ -15,6 +15,6 @@ if [ "${rep}" == "O" ]; then
     python $(pwd)/etat_annonces.py
 fi
 
-python $(pwd)/enrich_items.py
+python $(pwd)/enrich_items.py > $(pwd)/enrich_items.log
 echo "Copie des items vers le project Django et import"
 cp items.json ../django_projects/rechercheMaison/data/annonces.json
