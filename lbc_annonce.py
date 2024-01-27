@@ -29,7 +29,7 @@ class LbcAnnonce():
 
     def extract_metadatas(self):
         p_data_annonce = self.soup.find('p', attrs={'data-qa-id' : "adview_date"})
-        date_annonce = datetime.strptime(p_data_annonce.text, '%d/%m/%Y à %H:%M').strftime('%d/%m/%Y %H:%M') if p_data_annonce is not None else None
+        date_annonce = datetime.strptime(p_data_annonce.text, '%d/%m/%Y à %H:%M').strftime('%d/%m/%Y') if p_data_annonce is not None else None
         p_data_commune = self.dom.xpath("//span[@href='#map']")
         logging.debug("p_data_commune : %s" % p_data_commune)
         commune, cp = None, None

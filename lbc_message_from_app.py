@@ -39,8 +39,8 @@ class LbcMessageFromApp:
         id_annonce = url_p.path.split('/')[-1].replace(".htm", '')  
         mystruct = MESSAGE_STRUCT.copy()
         myvalues = {
-        'date_mail' : datetime.fromtimestamp(self.date).strftime('%Y-%m-%d') if self.date is not None else None,
-        'created_at' : datetime.fromtimestamp(self.date).strftime('%Y-%m-%d') if self.date is not None else None,
+        'date_mail' : datetime.fromtimestamp(self.date).strftime('%d/%m/%Y') if self.date is not None else None,
+        'created_at' : datetime.fromtimestamp(self.date).strftime('%d/%m/%Y') if self.date is not None else None,
         'url' : url,
         'id_annonce': id_annonce, 
         'prix' : 0

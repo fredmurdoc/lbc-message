@@ -20,7 +20,7 @@ items = json.load(items_fp)
 
 lbc_part_to_delete = '/vi/'
 
-is_updated_at = datetime.now().strftime('%Y-%m-%d')
+is_updated_at = datetime.now().strftime('%d/%m/%Y')
 # on parcours le fichier items.json et on regarde les annonces correspondantes dans les repertoire annocnes
 for key_item, item in enumerate(items):
     logging.debug("FROM ITEMS JSON item : %s" % item)
@@ -106,7 +106,7 @@ for annonce_file in os.listdir(directory):
         logging.info('FROM HTML FILE: analyze payload file %s' % annonce_file)
         time_html= os.path.getmtime(html_file_annonce_path)
         convert_time = time.localtime(time_html)
-        date_fichier = time.strftime('%Y-%m-%d', convert_time)
+        date_fichier = time.strftime('%d/%m/%Y', convert_time)
         #analyse it
         lbc_annonce = LbcAnnonce(html_file=html_file_annonce_path)
         item = MESSAGE_STRUCT.copy()
