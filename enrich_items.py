@@ -66,10 +66,14 @@ for key_item, item in enumerate(items):
                 item['date_desactivation'] = is_updated_at
         
         # on fixe la date de maj à la date de mise à jour du fichier HTML
-        time_html= os.path.getmtime(html_file_annonce_path)
-        convert_time = time.localtime(time_html)
-        date_fichier = time.strftime('%Y-%m-%d', convert_time)
-        item['updated_at'] = max(date_fichier, item['created_at'], item['date_mail'])
+        time_html_modification= os.path.getmtime(html_file_annonce_path)
+        time_html_creation= os.path.getctime(html_file_annonce_path)
+        convert_time_html_creation = time.localtime(time_html_creation)
+        convert_time_html_modification = time.localtime(time_html_modification)
+        date_creation_fichier = time.strftime('%d/%m/%Y', convert_time_html_creation)
+        date_modification_fichier = time.strftime('%d/%m/%Y', convert_time_html_modification)
+        item['updated_at'] = date_modification_fichier
+        item['date_annonce'] = item['date_annonce'] if 'date_annonce' in item.keys() and item['date_annonce'] is not None else date_creation_fichier
         print('annonce %s date maj %s ' % (item['id_annonce'], item['updated_at']))
         if 'image_url' not in item or item['image_url'] is None:
             item['image_url'] = annonce.extract_image()
@@ -111,6 +115,7 @@ for annonce_file in os.listdir(directory):
         item['url'] = 'https://www.leboncoin.fr/ventes_immobilieres/%s.htm' % id_annonce
         item['created_at'] = date_fichier
         item['date_mail'] = date_fichier
+        
         logging.info("FROM HTML FILE: item %s desactivee : %s " % (id_annonce, item['desactivee']))
         if item['desactivee'] == False:
             criteres = lbc_annonce.extract_criteres()
@@ -142,6 +147,7 @@ for annonce_file in os.listdir(directory):
             item['image_url'] = lbc_annonce.extract_image()
         if 'intitule' in item and item['intitule'] is not None and 'description' in item and item['description'] is not None:
             item['intitule'] = item['description']
+        item['date_annonce'] = item['date_annonce'] if 'date_annonce' in item.keys() and item['date_annonce'] is not None else date_fichier
         logging.info('append item %s' % id_annonce)
         items.append(item)
 
