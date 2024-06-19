@@ -4,10 +4,10 @@ import sys
 import urllib3
 items_fp =open('items.json', 'r')
 items = json.load(items_fp)
-nb_to_open=50
+nb_to_open=15
 counter = 0
 urls_to_open = []
-
+have_to_stop = False
 
 lbc_part_to_delete = '/vi/'
 
@@ -23,6 +23,11 @@ for item in items:
         urls_to_open.append(item['url'])
     else:
         print("collected %d urls stop" % len(urls_to_open))
+        have_to_stop = True
         break
 
 os.system('firefox %s' % " ".join(urls_to_open))
+if not have_to_stop:
+    sys.exit(0)
+else:
+    sys.exit(2)
