@@ -85,6 +85,7 @@ for key_item, item in enumerate(items):
         continue    
 
 ids_annonces = [i['id_annonce'] for i in items]
+
 # on scnanne tout ce qu'il y a dans le repertoie annonces et celles qui ne sont pas dans items.json on les crée
 directory = 'annonces'
 
