@@ -10,7 +10,15 @@ python $(pwd)/etat_annonces.py
 read -p "ouvrir navigateur ou telecharger annonces ? O/n" rep
 
 if [ "${rep}" == "O" ]; then
-    python $(pwd)/annonces.py
+    res=1
+    while [ $res -ne 0 ]; do
+        python $(pwd)/annonces.py
+        res=$?
+        echo "result ${res}"
+        if [ $res -ne 0 ]; then
+            read -p "presser entree pour ouvrir d'autres resultats"
+        fi
+    done
     read -p "presser entree une fois les annonces telechargees" rep
     python $(pwd)/etat_annonces.py
 fi
