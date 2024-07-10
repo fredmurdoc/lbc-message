@@ -1,3 +1,4 @@
+cp items.json cp items.old.json
 python $(pwd)/main.py
 
 if [ ! -f items.json ]; then
